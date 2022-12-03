@@ -8,12 +8,14 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
 import com.mongodb.client.*;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import org.bson.Document;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,7 +26,7 @@ public class QuizRepositoryImpl implements QuizRepository {
     @Autowired
     private QuizMongoDbConnector mongoConnector;
     @Override
-    public List<Quiz> getAllQuizes() {
+    public List<Quiz> findAll() {
         List<Quiz> result = new ArrayList<>();
             MongoCollection<Document> quizDocs = mongoConnector.getCollection("Quiz");
             FindIterable<Document> iterDoc = quizDocs.find();
@@ -39,7 +41,13 @@ public class QuizRepositoryImpl implements QuizRepository {
     }
 
     @Override
-    public Quiz getQuizById(String id) {
-        return null;
+    public Quiz findQuizById(String id) {
+        Gson gson = new GsonBuilder().create();
+        MongoCollection<Document> collection = mongoConnector.getCollection("Quiz");
+        AggregateIterable<Document> aggregation = collection.aggregate(Arrays.asList(new Document("$match",
+                new Document("_id", new ObjectId("638b4c4adfbedb7c21a64526")))));
+        Iterator<Document> it = aggregation.iterator();
+        Document doc = it.next();
+        return gson.fromJson(doc.toJson(), Quiz.class);
     }
 }
