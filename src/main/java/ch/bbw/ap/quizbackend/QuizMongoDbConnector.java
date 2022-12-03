@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 
@@ -26,16 +27,23 @@ public class QuizMongoDbConnector {
             mongoProperties.setUri("mongodb://" + mongoProperties.getUsername() + ":" + mongoProperties.getPassword()
             + "@" + mongoProperties.getHost() + ":" + mongoProperties.getPort() + "/" + mongoProperties.getDatabase());
         }
+        else {
+            String[] uris = mongoProperties.getUri().split("/");
+            mongoProperties.setDatabase(uris[uris.length - 1]);
+            System.out.println(mongoProperties.getDatabase());
+        }
 
-        try(MongoClient mongoClient = MongoClients.create(
+        MongoClient mongoClient = MongoClients.create(
                 MongoClientSettings.builder().applyConnectionString(
-                        new ConnectionString(mongoProperties.getUri())).build()
-        )) {
-            MongoDatabase db = mongoClient.getDatabase(mongoProperties.getDatabase());
-            return db.getCollection(collectionName);
-        } catch (MongoException e) {
-            System.err.println("Something went wrong with the MongoDB Connection");
-            return null;
+                        new ConnectionString(mongoProperties.getUri())).build());
+            try {
+                MongoDatabase db = mongoClient.getDatabase(mongoProperties.getDatabase());
+                return db.getCollection(collectionName);
+            }
+            catch (MongoException e) {
+                System.err.println("Something went wrong with the connection with the collection");
+                return null;
+
         }
     }
 }
