@@ -23,14 +23,11 @@ public class QuizMongoDbConnector {
     private MongoProperties mongoProperties;
 
     public MongoCollection<Document> getCollection(String collectionName) {
-        if(mongoProperties.getUri() == null) {
-            mongoProperties.setUri("mongodb://" + mongoProperties.getUsername() + ":" + mongoProperties.getPassword()
-            + "@" + mongoProperties.getHost() + ":" + mongoProperties.getPort() + "/" + mongoProperties.getDatabase());
-        }
-        else {
+
+        if(mongoProperties.getDatabase() == null) {
             String[] uris = mongoProperties.getUri().split("/");
-            mongoProperties.setDatabase(uris[uris.length - 1]);
-            System.out.println(mongoProperties.getDatabase());
+            mongoProperties.setDatabase(uris[uris.length -1]);
+
         }
 
         MongoClient mongoClient = MongoClients.create(
