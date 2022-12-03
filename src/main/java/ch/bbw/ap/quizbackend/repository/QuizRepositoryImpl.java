@@ -28,13 +28,14 @@ public class QuizRepositoryImpl implements QuizRepository {
     @Override
     public List<Quiz> findAll() {
         List<Quiz> result = new ArrayList<>();
-            MongoCollection<Document> quizDocs = mongoConnector.getCollection("Quiz");
+            MongoCollection<Document> quizDocs = mongoConnector.getCollection("quiz");
             FindIterable<Document> iterDoc = quizDocs.find();
             Iterator<Document> it = iterDoc.iterator();
             Gson gson = new GsonBuilder().create();
             while(it.hasNext()) {
                 Document doc = it.next();
                 Quiz quiz = gson.fromJson(doc.toJson(), Quiz.class);
+                quiz.setCreatedAt(doc.getDate("creationDate"));
                 result.add(quiz);
             }
         return result;

@@ -3,23 +3,24 @@ package ch.bbw.ap.quizbackend.model;
 import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 public class Quiz {
 
     private String name;
     private User createdBy;
-    private LocalDate creationDate;
+    private Date createdOn;
     private List<Question> questions;
 
     public Quiz() {
         this(null, null, null, null);
     }
 
-    public Quiz(String name, User createdBy, LocalDate creationDate, List<Question> questions) {
+    public Quiz(String name, User createdBy, Date createdOn, List<Question> questions) {
         this.name = name;
         this.createdBy = createdBy;
-        this.creationDate = creationDate;
+        this.createdOn = createdOn;
         this.questions = questions;
     }
 
@@ -40,12 +41,12 @@ public class Quiz {
         this.createdBy = createdBy;
     }
 
-    public LocalDate getCreationDate() {
-        return creationDate;
+    public Date getCreatedAt() {
+        return createdOn;
     }
 
-    public void setCreationDate(LocalDate creationDate) {
-        this.creationDate = creationDate;
+    public void setCreatedAt(Date createdOn) {
+        this.createdOn = createdOn;
     }
 
     public List<Question> getQuestions() {
