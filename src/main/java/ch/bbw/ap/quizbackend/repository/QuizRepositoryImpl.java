@@ -44,9 +44,10 @@ public class QuizRepositoryImpl implements QuizRepository {
     @Override
     public Quiz findQuizById(String id) {
         Gson gson = new GsonBuilder().create();
-        MongoCollection<Document> collection = mongoConnector.getCollection("Quiz");
+        MongoCollection<Document> collection = mongoConnector.getCollection("quiz");
         AggregateIterable<Document> aggregation = collection.aggregate(Arrays.asList(new Document("$match",
-                new Document("_id", new ObjectId("638b4c4adfbedb7c21a64526")))));
+                new Document("_id",
+                        new ObjectId(id)))));
         Iterator<Document> it = aggregation.iterator();
         Document doc = it.next();
         return gson.fromJson(doc.toJson(), Quiz.class);
