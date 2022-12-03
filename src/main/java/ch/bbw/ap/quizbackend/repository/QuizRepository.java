@@ -8,6 +8,6 @@ import java.util.List;
 @Repository
 public interface QuizRepository {
 
-    public List<Quiz> getAllQuizes();
-    public Quiz getQuizById(String id);
+    public List<Quiz> findAll();
+    public Quiz findQuizById(String id);
 }
