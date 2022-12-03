@@ -29,9 +29,9 @@ public class QuizMongoDbConnector {
 
         try(MongoClient mongoClient = MongoClients.create(
                 MongoClientSettings.builder().applyConnectionString(
-                        new ConnectionString("mongodb://root:root@localhost/Quiz")).build()
+                        new ConnectionString(mongoProperties.getUri())).build()
         )) {
-            MongoDatabase db = mongoClient.getDatabase(mongoProperties.getUri());
+            MongoDatabase db = mongoClient.getDatabase(mongoProperties.getDatabase());
             return db.getCollection(collectionName);
         } catch (MongoException e) {
             System.err.println("Something went wrong with the MongoDB Connection");
