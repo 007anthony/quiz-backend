@@ -1,12 +1,10 @@
 package ch.bbw.ap.quizbackend.controller;
 
 import ch.bbw.ap.quizbackend.model.Quiz;
+import ch.bbw.ap.quizbackend.model.request.Paging;
 import ch.bbw.ap.quizbackend.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,8 +15,8 @@ public class QuizController {
     private QuizService quizService;
 
     @GetMapping("/quiz/all")
-    public List<Quiz> allQuizes() {
-        return quizService.getQuizes();
+    public List<Quiz> allQuizes(Paging paging) {
+        return quizService.getQuizes(paging);
     }
 
     @GetMapping("/quiz/{id}")

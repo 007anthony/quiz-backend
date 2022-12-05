@@ -2,6 +2,7 @@ package ch.bbw.ap.quizbackend.repository;
 
 import ch.bbw.ap.quizbackend.QuizMongoDbConnector;
 import ch.bbw.ap.quizbackend.model.Quiz;
+import ch.bbw.ap.quizbackend.model.request.Paging;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mongodb.ConnectionString;
@@ -26,10 +27,17 @@ public class QuizRepositoryImpl implements QuizRepository {
     @Autowired
     private QuizMongoDbConnector mongoConnector;
     @Override
-    public List<Quiz> findAll() {
+    public List<Quiz> findAll(Paging paging) {
         List<Quiz> result = new ArrayList<>();
             MongoCollection<Document> quizDocs = mongoConnector.getCollection("quiz");
-            FindIterable<Document> iterDoc = quizDocs.find();
+            AggregateIterable<Document> iterDoc = null;
+            if(paging.getRows() != null) {
+                iterDoc = quizDocs.aggregate(Arrays.asList(new Document("$skip", paging.getOffset()),
+                        new Document("$limit", paging.getRows())));
+            }
+            else {
+                iterDoc = (AggregateIterable<Document>) quizDocs.find();
+            }
             Iterator<Document> it = iterDoc.iterator();
             Gson gson = new GsonBuilder().create();
             while(it.hasNext()) {
