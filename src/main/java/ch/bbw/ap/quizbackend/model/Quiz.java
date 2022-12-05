@@ -10,14 +10,14 @@ public class Quiz {
 
     private String name;
     private User createdBy;
-    private Date createdOn;
+    private LocalDate createdOn;
     private List<Question> questions;
 
     public Quiz() {
         this(null, null, null, null);
     }
 
-    public Quiz(String name, User createdBy, Date createdOn, List<Question> questions) {
+    public Quiz(String name, User createdBy, LocalDate createdOn, List<Question> questions) {
         this.name = name;
         this.createdBy = createdBy;
         this.createdOn = createdOn;
@@ -41,11 +41,11 @@ public class Quiz {
         this.createdBy = createdBy;
     }
 
-    public Date getCreatedAt() {
+    public LocalDate getCreatedAt() {
         return createdOn;
     }
 
-    public void setCreatedAt(Date createdOn) {
+    public void setCreatedAt(LocalDate createdOn) {
         this.createdOn = createdOn;
     }
 
