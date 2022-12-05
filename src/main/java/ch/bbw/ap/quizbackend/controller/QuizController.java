@@ -38,7 +38,7 @@ public class QuizController {
     }
 
     @PutMapping("/quiz/{id}")
-    public Map<String, Quiz> editQuiz(@RequestBody Quiz quiz) {
-        return quizService.editQuiz(quiz);
+    public Map<String, Quiz> editQuiz(@PathVariable String id, @RequestBody Quiz quiz) {
+        return quizService.editQuiz(id, quiz);
     }
 }

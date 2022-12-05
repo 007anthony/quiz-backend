@@ -1,10 +1,14 @@
 package ch.bbw.ap.quizbackend.model;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Question {
+    @Expose
     private String question;
+    @Expose
     private List<String> answers;
 
     public Question(String question) {

@@ -1,8 +1,13 @@
 package ch.bbw.ap.quizbackend.model;
 
-public class User {
+import com.google.gson.annotations.Expose;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
+public class User {
+    @Expose
     private String username;
+
+    @Expose
     private String email;
 
     public User(String username, String email) {

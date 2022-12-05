@@ -1,16 +1,20 @@
 package ch.bbw.ap.quizbackend.model;
 
-import org.springframework.cglib.core.Local;
+import com.google.gson.annotations.Expose;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
 public class Quiz {
-
+    @Expose
     private String name;
+    @Expose
     private User createdBy;
     private LocalDate createdOn;
+    @Expose
     private List<Question> questions;
 
     public Quiz() {
@@ -41,13 +45,17 @@ public class Quiz {
         this.createdBy = createdBy;
     }
 
-    public LocalDate getCreatedAt() {
+    public LocalDate getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedAt(LocalDate createdOn) {
-        this.createdOn = createdOn;
+    public void setCreatedOn(LocalDate createdOn) {
     }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = LocalDate.ofInstant(createdOn.toInstant(), ZoneId.systemDefault());
+    }
+
 
     public List<Question> getQuestions() {
         return questions;

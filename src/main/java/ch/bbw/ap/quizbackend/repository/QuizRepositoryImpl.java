@@ -22,6 +22,7 @@ import java.util.*;
 @Repository
 public class QuizRepositoryImpl implements QuizRepository {
 
+    private final Gson gsonWithExclusion = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     private final Gson gson = new GsonBuilder().create();
 
 
@@ -30,23 +31,31 @@ public class QuizRepositoryImpl implements QuizRepository {
     @Override
     public List<Quiz> findAll(Paging paging) {
         List<Quiz> result = new ArrayList<>();
-            MongoCollection<Document> quizDocs = mongoConnector.getCollection("quiz");
-            AggregateIterable<Document> iterDoc = null;
-            if(paging.getRows() != null) {
-                iterDoc = quizDocs.aggregate(Arrays.asList(new Document("$skip", paging.getOffset()),
-                        new Document("$limit", paging.getRows())));
-            }
-            else {
-                iterDoc = (AggregateIterable<Document>) quizDocs.find();
-            }
+        MongoCollection<Document> quizDocs = mongoConnector.getCollection("quiz");
+        if(paging.getRows() != null) {
+            AggregateIterable<Document> iterDoc = quizDocs.aggregate(Arrays.asList(new Document("$skip", paging.getOffset()),
+                    new Document("$limit", paging.getRows())));
             Iterator<Document> it = iterDoc.iterator();
             while(it.hasNext()) {
                 Document doc = it.next();
                 Quiz quiz = this.gson.fromJson(doc.toJson(), Quiz.class);
-                quiz.setCreatedAt(doc.getDate("creationDate"));
+                quiz.setCreatedOn(doc.getDate("creationDate"));
                 result.add(quiz);
             }
-        return result;
+            return result;
+        }
+        else {
+            FindIterable<Document> iterDoc = quizDocs.find();
+            Iterator<Document> it = iterDoc.iterator();
+            while(it.hasNext()) {
+                Document doc = it.next();
+                Quiz quiz = this.gsonWithExclusion.fromJson(doc.toJson(), Quiz.class);
+                quiz.setCreatedOn(doc.getDate("creationDate"));
+                result.add(quiz);
+            }
+            return result;
+        }
+
     }
 
     @Override
@@ -57,7 +66,9 @@ public class QuizRepositoryImpl implements QuizRepository {
                         new ObjectId(id)))));
         Iterator<Document> it = aggregation.iterator();
         Document doc = it.next();
-        return this.gson.fromJson(doc.toJson(), Quiz.class);
+        Quiz quiz = this.gsonWithExclusion.fromJson(doc.toJson(), Quiz.class);
+        quiz.setCreatedOn(doc.getDate("creationDate"));
+        return quiz;
     }
 
     @Override

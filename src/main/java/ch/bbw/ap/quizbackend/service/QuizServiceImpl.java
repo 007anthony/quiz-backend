@@ -29,7 +29,7 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public Quiz createQuiz(Quiz quiz, User user) {
-        quiz.setCreatedAt(LocalDate.now());
+        quiz.setCreatedOn(LocalDate.now());
         quiz.setCreatedBy(user);
         return quizRepository.createQuiz(quiz);
     }
