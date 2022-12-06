@@ -17,82 +17,56 @@ import org.springframework.stereotype.Repository;
 import org.bson.Document;
 
 import javax.print.Doc;
+import javax.swing.event.DocumentEvent;
 import java.util.*;
 
 @Repository
 public class QuizRepositoryImpl implements QuizRepository {
 
-    private final Gson gsonWithExclusion = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-    private final Gson gson = new GsonBuilder().create();
-
-
     @Autowired
     private QuizMongoDbConnector mongoConnector;
     @Override
-    public List<Quiz> findAll(Paging paging) {
+    public Iterator<Document> findAll(Paging paging) {
         List<Quiz> result = new ArrayList<>();
         MongoCollection<Document> quizDocs = mongoConnector.getCollection("quiz");
         if(paging.getRows() != null) {
             AggregateIterable<Document> iterDoc = quizDocs.aggregate(Arrays.asList(new Document("$skip", paging.getOffset()),
                     new Document("$limit", paging.getRows())));
-            Iterator<Document> it = iterDoc.iterator();
-            while(it.hasNext()) {
-                Document doc = it.next();
-                Quiz quiz = this.gson.fromJson(doc.toJson(), Quiz.class);
-                quiz.setCreatedOn(doc.getDate("creationDate"));
-                result.add(quiz);
-            }
-            return result;
+            return iterDoc.iterator();
+
         }
         else {
             FindIterable<Document> iterDoc = quizDocs.find();
-            Iterator<Document> it = iterDoc.iterator();
-            while(it.hasNext()) {
-                Document doc = it.next();
-                Quiz quiz = this.gsonWithExclusion.fromJson(doc.toJson(), Quiz.class);
-                quiz.setCreatedOn(doc.getDate("creationDate"));
-                result.add(quiz);
-            }
-            return result;
+            return iterDoc.iterator();
         }
 
     }
 
     @Override
-    public Quiz findQuizById(String id) {
+    public Document findQuizById(String id) {
         MongoCollection<Document> collection = mongoConnector.getCollection("quiz");
         AggregateIterable<Document> aggregation = collection.aggregate(Arrays.asList(new Document("$match",
                 new Document("_id",
                         new ObjectId(id)))));
         Iterator<Document> it = aggregation.iterator();
-        Document doc = it.next();
-        Quiz quiz = this.gsonWithExclusion.fromJson(doc.toJson(), Quiz.class);
-        quiz.setCreatedOn(doc.getDate("creationDate"));
-        return quiz;
+        return it.next();
     }
 
     @Override
-    public Quiz createQuiz(Quiz quiz) {
+    public void createQuiz(Document document) {
         MongoCollection<Document> collection = mongoConnector.getCollection("quiz");
-        Document document = Document.parse(gson.toJson(quiz));
         collection.insertOne(document);
-        return quiz;
     }
 
     @Override
-    public Quiz deleteQuiz(String id) {
+    public void deleteQuiz(Document document) {
         MongoCollection<Document> collection = mongoConnector.getCollection("quiz");
-        Quiz quiz = this.findQuizById(id);
-        collection.deleteOne(Document.parse(gson.toJson(quiz)));
-        return quiz;
+        collection.deleteOne(document);
     }
 
     @Override
-    public Map<String, Quiz> editQuiz(String id, Quiz newQuiz) {
+    public void editQuiz(Document oldDocument, Document newDocument) {
         MongoCollection<Document> collection = mongoConnector.getCollection("quiz");
-        Quiz oldQuiz = this.findQuizById(id);
-
-        collection.updateOne(Document.parse(gson.toJson(oldQuiz)), Document.parse(gson.toJson(newQuiz)));
-        return Map.of("oldQuiz", oldQuiz, "newQuiz", newQuiz);
+        collection.updateOne(oldDocument, newDocument);
     }
 }

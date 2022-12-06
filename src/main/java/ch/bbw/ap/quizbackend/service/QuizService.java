@@ -16,5 +16,5 @@ public interface QuizService {
 
     public Quiz createQuiz(Quiz quiz, User user);
     public Quiz deleteQuiz(String id);
-    public Map<String, Quiz> editQuiz(String id, Quiz quiz);
+    public Map<String, Quiz> editQuiz(String id, Quiz newQuiz);
 }
