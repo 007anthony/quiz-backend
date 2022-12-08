@@ -41,4 +41,8 @@ public class Game {
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
     }
+
+    public void addAnswer(Answer answer) {
+        this.answers.add(answer);
+    }
 }

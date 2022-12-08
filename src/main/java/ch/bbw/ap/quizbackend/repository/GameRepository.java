@@ -8,4 +8,5 @@ public interface GameRepository {
 
     public Document findGameById(String id);
     public void createGame(Document document);
+    public void editGame(Document oldDocument, Document newDocument);
 }

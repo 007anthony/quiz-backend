@@ -1,5 +1,6 @@
 package ch.bbw.ap.quizbackend.service;
 
+import ch.bbw.ap.quizbackend.model.Answer;
 import ch.bbw.ap.quizbackend.model.Game;
 import ch.bbw.ap.quizbackend.repository.GameRepository;
 import com.google.gson.Gson;
@@ -29,6 +30,16 @@ public class GameServiceImpl implements GameService{
     public Game createGame(Game game) {
         Document document = Document.parse(gson.toJson(game));
         gameRepository.createGame(document);
+        return game;
+    }
+
+    @Override
+    public Game saveAnswer(String id, Answer answer) {
+        Game game = this.getGame(id);
+        Document oldDocument = Document.parse(gson.toJson(game));
+        game.addAnswer(answer);
+        Document newDocument = Document.parse(gson.toJson(game));
+        gameRepository.editGame(oldDocument, newDocument);
         return game;
     }
 }

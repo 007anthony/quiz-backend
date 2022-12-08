@@ -33,4 +33,11 @@ public class GameRepositoryImpl implements GameRepository {
         MongoCollection<Document> collection = mongoConnector.getCollection("game");
         collection.insertOne(document);
     }
+
+    @Override
+    public void editGame(Document oldDocument, Document newDocument) {
+        MongoCollection<Document> collection = mongoConnector.getCollection("game");
+        collection.updateOne(oldDocument, newDocument);
+    }
+
 }
