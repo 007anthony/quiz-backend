@@ -49,17 +49,9 @@ public class Quiz {
     public LocalDate getCreatedOn() {
         return createdOn;
     }
-    @JsonSetter
     public void setCreatedOn(LocalDate createdOn) {
         this.createdOn = createdOn;
     }
-
-
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = LocalDate.ofInstant(createdOn.toInstant(), ZoneId.systemDefault());
-    }
-
-
     public List<Question> getQuestions() {
         return questions;
     }
