@@ -5,8 +5,10 @@ import ch.bbw.ap.quizbackend.model.User;
 import ch.bbw.ap.quizbackend.model.request.Paging;
 import ch.bbw.ap.quizbackend.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Media;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +28,7 @@ public class QuizController {
         return quizService.getQuiz(id);
     }
 
-    @PostMapping("/quiz")
+    @PostMapping(value = "/quiz", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public Quiz createQuiz(@RequestBody Quiz quiz) {
         User user = new User("test", "test@test.com");
         return quizService.createQuiz(quiz, user);

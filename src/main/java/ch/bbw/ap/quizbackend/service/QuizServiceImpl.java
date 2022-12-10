@@ -4,6 +4,7 @@ import ch.bbw.ap.quizbackend.model.Quiz;
 import ch.bbw.ap.quizbackend.model.User;
 import ch.bbw.ap.quizbackend.model.request.Paging;
 import ch.bbw.ap.quizbackend.repository.QuizRepository;
+import ch.bbw.ap.quizbackend.serializer.LocalDateAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.bson.Document;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +22,7 @@ import java.util.Map;
 public class QuizServiceImpl implements QuizService {
 
     private final Gson gsonWithExclusion = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-    private final Gson gson = new GsonBuilder().create();
+    private final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).setDateFormat("yyy-MM-dd").create();
 
     @Autowired
     private QuizRepository quizRepository;
@@ -41,7 +43,6 @@ public class QuizServiceImpl implements QuizService {
         while(it.hasNext()) {
             Document doc = it.next();
             Quiz quiz = this.gson.fromJson(doc.toJson(), Quiz.class);
-            quiz.setCreatedOn(doc.getDate("creationDate"));
             result.add(quiz);
         }
         return result;
