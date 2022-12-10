@@ -3,17 +3,18 @@ package ch.bbw.ap.quizbackend.service;
 import ch.bbw.ap.quizbackend.model.Answer;
 import ch.bbw.ap.quizbackend.model.Game;
 import ch.bbw.ap.quizbackend.repository.GameRepository;
+import ch.bbw.ap.quizbackend.serializer.LocalDateAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 public class GameServiceImpl implements GameService{
-
-    private final Gson gsonWithExclusion = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-    private final Gson gson = new GsonBuilder().create();
+    private final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
 
     @Autowired
     private GameRepository gameRepository;
@@ -21,7 +22,7 @@ public class GameServiceImpl implements GameService{
     @Override
     public Game getGame(String id) {
         Document doc = gameRepository.findGameById(id);
-        Game game = this.gsonWithExclusion.fromJson(doc.toJson(), Game.class);
+        Game game = this.gson.fromJson(doc.toJson(), Game.class);
         return game;
 
     }

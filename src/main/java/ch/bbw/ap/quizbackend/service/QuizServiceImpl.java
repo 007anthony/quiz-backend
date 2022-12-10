@@ -20,8 +20,6 @@ import java.util.Map;
 
 @Service
 public class QuizServiceImpl implements QuizService {
-
-    private final Gson gsonWithExclusion = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     private final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).setDateFormat("yyy-MM-dd").create();
 
     @Autowired
@@ -31,8 +29,7 @@ public class QuizServiceImpl implements QuizService {
     public Quiz getQuiz(String id) {
         Document doc = quizRepository.findQuizById(id);
 
-        Quiz quiz = this.gsonWithExclusion.fromJson(doc.toJson(), Quiz.class);
-        quiz.setCreatedOn(doc.getDate("creationDate"));
+        Quiz quiz = this.gson.fromJson(doc.toJson(), Quiz.class);
         return quiz;
     }
 
