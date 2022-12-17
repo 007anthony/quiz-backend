@@ -33,6 +33,7 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests().requestMatchers( "/game/**").permitAll();
         http.authorizeHttpRequests().requestMatchers(HttpMethod.GET).permitAll();
         http.authorizeHttpRequests().requestMatchers(HttpMethod.POST, "/registrate/**", "/login").permitAll();
+        http.authorizeHttpRequests().anyRequest().authenticated();
         return http.build();
     }
 
