@@ -6,6 +6,7 @@ import ch.bbw.ap.quizbackend.model.request.Paging;
 import ch.bbw.ap.quizbackend.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.print.attribute.standard.Media;
@@ -30,8 +31,7 @@ public class QuizController {
 
     @PostMapping(value = "/quiz", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public Quiz createQuiz(@RequestBody Quiz quiz) {
-        User user = new User("test", "test@test.com");
-        return quizService.createQuiz(quiz, user);
+        return quizService.createQuiz(quiz);
     }
 
     @DeleteMapping("/quiz/{id}")

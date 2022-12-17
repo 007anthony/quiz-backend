@@ -14,7 +14,7 @@ public interface QuizService {
     public Quiz getQuiz(String id);
     public List<Quiz> getQuizes(Paging paging);
 
-    public Quiz createQuiz(Quiz quiz, User user);
+    public Quiz createQuiz(Quiz quiz);
     public Quiz deleteQuiz(String id);
     public Map<String, Quiz> editQuiz(String id, Quiz newQuiz);
 }

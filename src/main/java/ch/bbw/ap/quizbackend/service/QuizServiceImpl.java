@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -46,7 +47,8 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public Quiz createQuiz(Quiz quiz, User user) {
+    public Quiz createQuiz(Quiz quiz) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         quiz.setCreatedOn(LocalDate.now());
         quiz.setCreatedBy(user);
         Document document = Document.parse(gson.toJson(quiz));
@@ -56,15 +58,23 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public Quiz deleteQuiz(String id) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Quiz quiz = this.getQuiz(id);
+        if(user.equals(quiz.getCreatedBy())) {
+            return null;
+        }
         quizRepository.deleteQuiz(Document.parse(gson.toJson(quiz)));
         return quiz;
     }
 
     @Override
     public Map<String, Quiz> editQuiz(String id, Quiz newQuiz) {
-
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Quiz oldQuiz = this.getQuiz(id);
+        if(!user.equals(oldQuiz.getCreatedBy())) {
+            return null;
+        }
+        newQuiz.setCreatedBy(oldQuiz.getCreatedBy());
         quizRepository.editQuiz(Document.parse(gson.toJson(oldQuiz)), Document.parse(gson.toJson(newQuiz)));
         return Map.of("oldQuiz", oldQuiz, "newQuiz", newQuiz);
     }
