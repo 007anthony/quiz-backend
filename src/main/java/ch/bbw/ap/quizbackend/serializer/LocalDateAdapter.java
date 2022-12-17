@@ -11,11 +11,31 @@ import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class LocalDateAdapter implements JsonSerializer<LocalDate> {
-
+public class LocalDateAdapter extends TypeAdapter<LocalDate> {
 
     @Override
-    public JsonElement serialize(LocalDate localDate, Type type, JsonSerializationContext jsonSerializationContext) {
-        return new JsonPrimitive(localDate.format(DateTimeFormatter.ISO_DATE));
+    public void write(JsonWriter jsonWriter, LocalDate localDate) throws IOException {
+        if(localDate != null) {
+            jsonWriter.value(localDate.format(DateTimeFormatter.ISO_DATE));
+        }
+        else {
+            jsonWriter.nullValue();
+        }
+
+    }
+
+    @Override
+    public LocalDate read(JsonReader jsonReader) throws IOException {
+
+        LocalDate localDate = null;
+        if(jsonReader.peek() != JsonToken.NULL) {
+                localDate = LocalDate.parse(jsonReader.nextString());
+
+        }
+        else {
+            jsonReader.nextNull();
+        }
+
+        return localDate;
     }
 }
