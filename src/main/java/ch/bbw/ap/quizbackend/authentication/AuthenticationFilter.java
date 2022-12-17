@@ -35,6 +35,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader("Authorization");
+        if(token == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         try {
             UserWithCredentials user = userService.getUserByToken(token);
             if(user != null) {
