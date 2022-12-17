@@ -24,16 +24,13 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    @Autowired
-    private UserService userService;
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.addFilterBefore(authenticationFilter(), AbstractPreAuthenticatedProcessingFilter.class);
-        http.authorizeHttpRequests().requestMatchers( "/game/**").permitAll();
+        http.authorizeHttpRequests().requestMatchers( "/game/**", "/registrate/**", "/login/**").permitAll();
         http.authorizeHttpRequests().requestMatchers(HttpMethod.GET).permitAll();
-        http.authorizeHttpRequests().requestMatchers(HttpMethod.POST, "/registrate/**", "/login").permitAll();
         http.authorizeHttpRequests().anyRequest().authenticated();
+        http.csrf().disable();
         return http.build();
     }
 

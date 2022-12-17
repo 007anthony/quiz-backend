@@ -42,8 +42,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         try {
             UserWithCredentials user = userService.getUserByToken(token);
             if(user != null) {
-                Authentication authentication = new PreAuthenticatedAuthenticationToken((User) user, token,
-                        Arrays.stream(user.getRoles()).map((role) -> new SimpleGrantedAuthority(role)).collect(Collectors.toList()));
+                Authentication authentication = new PreAuthenticatedAuthenticationToken((User) user, token);
                 authentication.setAuthenticated(true);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 

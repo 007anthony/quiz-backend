@@ -22,8 +22,6 @@ public class CredentialHelper {
     @Autowired
     private QuizProperties quizProperties;
 
-    @Autowired
-    private UserService userService;
 
 
     public static String getHash(String password, String algorithm) throws NoSuchAlgorithmException {
@@ -41,7 +39,6 @@ public class CredentialHelper {
         }
         return stringBuilder.toString();
     }
-
     public String createToken(User user) {
         String result = null;
         try {

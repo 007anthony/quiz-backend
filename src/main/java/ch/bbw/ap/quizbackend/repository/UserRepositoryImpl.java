@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import javax.print.Doc;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 
 @Repository
@@ -37,7 +38,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Document findUserByUsername(String username) {
+    public Document findUserByUsername(String username) throws NoSuchElementException {
         MongoCollection<Document> collection = mongoConnector.getCollection("user");
         AggregateIterable<Document> aggregation = collection.aggregate(Arrays.asList(new Document("$match",
                 new Document("username", username))));

@@ -74,13 +74,16 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User createUser(UserWithCredentials user) throws NoSuchAlgorithmException {
-        if(getUserFromDb(user) != null) {
+        try {
+            user.setPassword(getSha256HashedPasswordFromUser(user));
+            Document document = Document.parse(gson.toJson(user));
+            userRepository.createUser(document);
+            user.setPassword(null);
+            return user;
+        }
+        catch (NoSuchElementException e) {
             return null;
         }
-        user.setPassword(CredentialHelper.getHash(user.getUsername() + user.getPassword(), "SHA-256"));
-        Document document = Document.parse(gson.toJson(user));
-        userRepository.createUser(document);
-        return user;
     }
 
     @Override
@@ -104,10 +107,15 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Map<String, String> login(UserWithCredentials user) {
-        if(validateUser(user)) {
-            return Map.of("token", credentialHelper.createToken(user));
+    public Map<String, String> login(UserWithCredentials user)  {
+        try {
+            if(validateUser(user)) {
+                return Map.of("token", credentialHelper.createToken(user));
+            }
         }
+        catch (NoSuchAlgorithmException e) {
+        }
+
         return null;
     }
 
@@ -117,8 +125,14 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public boolean validateUser(UserWithCredentials user) {
-        UserWithCredentials userFromDb = getUserFromDb(user);
-        return user.equals(userFromDb);
+    public boolean validateUser(UserWithCredentials user) throws NoSuchAlgorithmException {
+
+        String userFromDb = getUserFromDb(user).getPassword();
+        String hashedPassword = getSha256HashedPasswordFromUser(user);
+        return userFromDb != null && userFromDb.equals(hashedPassword);
+    }
+
+    private String getSha256HashedPasswordFromUser(UserWithCredentials user) throws NoSuchAlgorithmException {
+        return CredentialHelper.getHash(user.getUsername() + user.getPassword(), "SHA-256");
     }
 }

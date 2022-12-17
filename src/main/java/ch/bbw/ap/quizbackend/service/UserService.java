@@ -21,5 +21,5 @@ public interface UserService {
 
     public Map<String, String> login(UserWithCredentials user);
     public UserWithCredentials getUserFromDb(UserWithCredentials user);
-    public boolean validateUser(UserWithCredentials user);
+    public boolean validateUser(UserWithCredentials user) throws NoSuchAlgorithmException;
 }
